@@ -7,11 +7,11 @@ RESET = "\033[0m"  # This resets the color back to default
 
 def load_data(file_path: str) -> dict[str, any]:
     """Loads a JSON file"""
-    animals_data = None
+    json_data = None
     try:
         with open(file_path, "r") as handle:
             try:
-                animals_data = json.load(handle)
+                json_data = json.load(handle)
             except json.decoder.JSONDecodeError as e:
                 print(
                     f"{RED}Json file {file_path} could not be loaded JSON decoder error:{RESET} {e.msg}"
@@ -35,10 +35,10 @@ def load_data(file_path: str) -> dict[str, any]:
         """
         print(f"{RED}Try to load file {file_path}, system error:{RESET} {e}")
 
-    return animals_data
+    return json_data
 
 
-def read_template_html(file_path: str) -> str:
+def loads_template_html(file_path: str) -> str:
     """Reads an HTML template file and returns its content as a string"""
     try:
         with open(file_path, "r") as handle:
