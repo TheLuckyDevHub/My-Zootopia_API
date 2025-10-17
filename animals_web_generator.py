@@ -5,8 +5,9 @@ RED = "\033[91m"
 RESET = "\033[0m"  # This resets the color back to default
 
 
-def load_data(file_path: str)-> dict[str, any]:
+def load_data(file_path: str) -> dict[str, any]:
     """Loads a JSON file"""
+    animals_data = None
     try:
         with open(file_path, "r") as handle:
             try:
@@ -37,25 +38,50 @@ def load_data(file_path: str)-> dict[str, any]:
     return animals_data
 
 
-def print_animals(animals: dict[str, any]):
+def animal_type_to_stream(
+    characteristics, stream_output=print):
+    if characteristics:
+        charac_type = characteristics.get("type", None)
+        if charac_type:
+            print(f"Type: {charac_type}")
+
+
+def animal_locations_to_stream(
+    locations: list[str], stream_output=print):
+    """Streams the location/locations of an animal to the given output stream"""
+    if locations:
+        if len(locations) == 1:
+            stream_output(f"Location: {locations[0]}")
+        if len(locations) > 1:
+            stream_output(f"Locations: {", ".join(locations)}")
+
+
+def animal_characteristics_to_stream(
+    characteristics: dict[str, any], stream_output=print):
+    """Streams the characteristics of an animal to the given output stream"""
+    if characteristics:
+        diet = characteristics.get("diet", None)
+        if diet:
+            stream_output(f"Diet: {diet}")
+
+
+def animal_data_to_stream(
+    animal, stream_output=print):
+    """Streams the animal data to the given output stream"""
+    stream_output(f"Name: {animal['name']}")
+    characteristics = animal.get("characteristics", None)
+    animal_characteristics_to_stream(characteristics, print)
+    locations = animal.get("locations", None)
+    animal_locations_to_stream(locations, print)
+    animal_type_to_stream(characteristics, print)
+
+
+def print_animals(animals: dict[str, any]) -> None:
     """Prints the list of animals"""
+    if animals is None:
+        print("No animals data to display")
     for animal in animals:
-        print(f"Name: {animal['name']}")
-        characteristics = animal.get("characteristics", None)
-        if characteristics:
-            diet = characteristics.get("diet", None)
-            if diet:
-                print(f"Diet: {diet}")
-        locations = animal.get("locations", None)
-        if locations:
-            if len(locations) == 1:
-                print(f"Location: {locations[0]}")
-            if len(locations) > 1:
-                print(f"Locations: {", ".join(locations)}")
-        if characteristics:
-            charac_type = characteristics.get("type", None)
-            if charac_type:
-                print(f"Type: {charac_type}")
+        animal_data_to_stream(animal, print)
         print()
 
 
