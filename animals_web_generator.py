@@ -1,79 +1,44 @@
-import json
-
-# Basic color codes
-RED = "\033[91m"
-RESET = "\033[0m"  # This resets the color back to default
+import file_operations
 
 
-def load_data(file_path: str) -> dict[str, any]:
-    """Loads a JSON file"""
-    animals_data = None
-    try:
-        with open(file_path, "r") as handle:
-            try:
-                animals_data = json.load(handle)
-            except json.decoder.JSONDecodeError as e:
-                print(
-                    f"{RED}Json file {file_path} could not be loaded JSON decoder error:{RESET} {e.msg}"
-                )
-            except Exception as e:
-                """
-                This general exception is here, which can give many other errors, e.g.memory full, no
-                write permission etc.so that not so many exceptions have to be found here (bad code), a
-                general exception is found at the end and then its error message is output
-                """
-                print(
-                    f"{RED}Try to decode the json {file_path}, JSON decoder error:{RESET} {e}"
-                )
-    except IOError as e:
-        print(f"{RED}Json file {file_path} could not be loaded IO error:{RESET} {e}")
-    except Exception as e:
-        """
-        This general exception is here, which can give many other errors, e.g.memory full, no
-        write permission etc.so that not so many exceptions have to be found here (bad code), a
-        general exception is found at the end and then its error message is output
-        """
-        print(f"{RED}Try to load file {file_path}, system error:{RESET} {e}")
-
-    return animals_data
-
-
-def animal_type_to_stream(
-    characteristics, stream_output=print):
+def animal_type_to_string(characteristics, string_output) -> str:
     if characteristics:
         charac_type = characteristics.get("type", None)
         if charac_type:
-            print(f"Type: {charac_type}")
+            string_output = f"{string_output}Type: {charac_type}\n"
+    return string_output
 
 
-def animal_locations_to_stream(
-    locations: list[str], stream_output=print):
+def animal_locations_to_string(locations: list[str], string_output) -> str:
     """Streams the location/locations of an animal to the given output stream"""
     if locations:
         if len(locations) == 1:
-            stream_output(f"Location: {locations[0]}")
+            string_output = f"{string_output}Location: {locations[0]}\n"
         if len(locations) > 1:
-            stream_output(f"Locations: {", ".join(locations)}")
+            string_output = f"{string_output}Locations: {", ".join(locations)}\n"
+    return string_output
 
 
-def animal_characteristics_to_stream(
-    characteristics: dict[str, any], stream_output=print):
+def animal_characteristics_to_string(
+    characteristics: dict[str, any], string_output
+) -> str:
     """Streams the characteristics of an animal to the given output stream"""
     if characteristics:
         diet = characteristics.get("diet", None)
         if diet:
-            stream_output(f"Diet: {diet}")
+            string_output = f"{string_output}Diet: {diet}\n"
+    return string_output
 
 
-def animal_data_to_stream(
-    animal, stream_output=print):
-    """Streams the animal data to the given output stream"""
-    stream_output(f"Name: {animal['name']}")
+def animal_data_output_to_string(animal):
+    """Streams the animal data to the given output string"""
+    string_output = f"Name: {animal['name']}\n"
     characteristics = animal.get("characteristics", None)
-    animal_characteristics_to_stream(characteristics, print)
+    string_output = animal_characteristics_to_string(characteristics, string_output)
     locations = animal.get("locations", None)
-    animal_locations_to_stream(locations, print)
-    animal_type_to_stream(characteristics, print)
+    string_output = animal_locations_to_string(locations, string_output)
+    string_output = animal_type_to_string(characteristics, string_output)
+    return string_output
 
 
 def print_animals(animals: dict[str, any]) -> None:
@@ -81,13 +46,29 @@ def print_animals(animals: dict[str, any]) -> None:
     if animals is None:
         print("No animals data to display")
     for animal in animals:
-        animal_data_to_stream(animal, print)
+        string_output = animal_data_output_to_string(animal)
+        print(string_output)
         print()
 
 
+def animals_to_html_template(animals: dict[str, any], html_template: str) -> str:
+    if animals is None:
+        print("No animals data to display")
+        return html_template
+    string_output = ""
+    for animal in animals:
+        string_output += animal_data_output_to_string(animal)
+    
+    html_template = html_template.replace("__REPLACE_ANIMALS_INFO__", string_output)
+    return html_template
+
 def main():
-    animals_data = load_data("animals_data.json")
-    print_animals(animals_data)
+    animals_data = file_operations.load_data("animals_data.json")
+    # print_animals(animals_data)
+
+    html_template = file_operations.read_template_html("animals_template.html")
+    html_str = animals_to_html_template(animals_data, html_template)
+    file_operations.save_html(html_str,'animals.html')
 
 
 if __name__ == "__main__":
