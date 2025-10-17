@@ -214,3 +214,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# animals.html is generate in this project as result of this project
+animals.html
