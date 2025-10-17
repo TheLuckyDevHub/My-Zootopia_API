@@ -4,7 +4,7 @@ def serialize_animal_type(characteristics: dict[str, any], string_output: str) -
         charac_type = characteristics.get("type", None)
         if charac_type:
             string_output = (
-                f"{string_output}   <strong>Type:</strong> {charac_type}</br>\n"
+                f"{string_output}      <li><strong>Type:</strong> {charac_type}</li>\n"
             )
     return string_output
 
@@ -15,10 +15,10 @@ def serialize_animal_location(locations: list[str], string_output: str) -> str:
     if locations:
         if len(locations) == 1:
             string_output = (
-                f"{string_output}   <strong>Location:</strong> {locations[0]}</br>\n"
+                f"{string_output}      <li><strong>Location:</strong> {locations[0]}</li>\n"
             )
         if len(locations) > 1:
-            string_output = f"{string_output}   <strong>Locations:</strong> {", ".join(locations)}</br>\n"
+            string_output = f"{string_output}      <li><strong>Locations:</strong> {", ".join(locations)}</li>\n"
     return string_output
 
 
@@ -29,7 +29,10 @@ def serialize_animal_characteristics(
     if characteristics:
         diet = characteristics.get("diet", None)
         if diet:
-            string_output = f"{string_output}   <strong>Diet:</strong> {diet}</br>\n"
+            string_output = f"{string_output}      <li><strong>Diet:</strong> {diet}</li>\n"
+        skin_type = characteristics.get("skin_type", None)
+        if skin_type:
+            string_output = f"{string_output}      <li><strong>Skin Type:</strong> {skin_type}</li>\n"
     return string_output
 
 
@@ -38,14 +41,16 @@ def serialize_animal(animal: dict[str, any]) -> str:
     string_output = f'<div class="card__title">{animal['name']}</div>\n'
 
     characteristics = animal.get("characteristics", None)
-    string_output += '<p class="card__text">\n'
+    string_output += '<div class="card__text">\n'
+    string_output += '  <ul>\n'
 
     string_output = serialize_animal_characteristics(characteristics, string_output)
     locations = animal.get("locations", None)
     string_output = serialize_animal_location(locations, string_output)
     string_output = serialize_animal_type(characteristics, string_output)
 
-    string_output += "</p>\n"
+    string_output += '  </ul>\n'
+    string_output += "</div>\n"
     return string_output
 
 
