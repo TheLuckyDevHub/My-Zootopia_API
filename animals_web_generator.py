@@ -1,3 +1,5 @@
+import requests
+
 import file_operations
 import serializer
 
@@ -58,7 +60,7 @@ def create_html_by_skin_type(
             if animal.get("characteristics", {}).get("skin_type", None)
             == selected_skin_type
         ]
-        
+
         # Serialize selected skin type
     html_str = serializer.serialized_animals_to_html_template(
         filtered_animals, html_template
@@ -66,10 +68,34 @@ def create_html_by_skin_type(
     file_operations.save_html(html_str, f"animals_{selected_skin_type}.html")
 
 
-def main():
-    """Main function to generate the animals HTML file from JSON data and an HTML template"""
+def get_animal_from_api_ninjas(to_search_animal):
+    """_summary_
 
-    animals_data = file_operations.load_data("animals_data.json")
+    Args:
+        to_search_animal (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    api_url = "https://api.api-ninjas.com/v1/animals?name={}".format(to_search_animal)
+    response = requests.get(
+        api_url, headers={"X-Api-Key": "tlObzwDKSlaOPwL9Dm0wlw==nejGIJLbqlJiyUHr"}
+    )
+    if response.status_code == requests.codes.ok:
+        return response.json()
+    else:
+        print("Error:", response.status_code, response.text)
+        
+    return None
+
+
+def main():
+    """
+    Main function to generate the animals HTML file from
+    api-ninjas animals api and an HTML template
+    """
+    animals_data = get_animal_from_api_ninjas("fox")
+    
     if not animals_data:
         print("No animals data to process!!")
         return
