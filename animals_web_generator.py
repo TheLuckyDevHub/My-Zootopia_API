@@ -47,8 +47,11 @@ def handle_user_input(skin_types: list[str]) -> int:
 
 
 def create_html_by_skin_type(
-    animals: dict[str, any], skin_types: list[str], selected: int, html_template: str
-) -> str:
+    aninmal_name,
+    animals: dict[str, any], 
+    skin_types: list[str], 
+    selected: int, 
+    html_template: str):
     """Creates an HTML file based on the selected skin type"""
     filtered_animals = animals
     selected_skin_type = "All"
@@ -65,7 +68,10 @@ def create_html_by_skin_type(
     html_str = serializer.serialized_animals_to_html_template(
         filtered_animals, html_template
     )
-    file_operations.save_html(html_str, f"animals_{selected_skin_type}.html")
+    
+    file_name = f"animals_{selected_skin_type}.html"
+    file_operations.save_html(html_str, file_name)
+    print(f'Website was successfully generated for the animal {aninmal_name} to the file {file_name}.')
 
 
 def get_animal_from_api_ninjas(to_search_animal):
@@ -88,23 +94,37 @@ def get_animal_from_api_ninjas(to_search_animal):
         
     return None
 
+def get_user_animal_input():
+    while True:
+        user_input = input('Please enter an animal\'s name: ')
+        if not user_input or len(user_input) < 2:
+            print(f'The {user_input} is not a right input, please try it again...')
+        else:
+            break
+    return user_input
 
 def main():
     """
-    Main function to generate the animals HTML file from
+    Main function to generate the animal's HTML file from
     api-ninjas animals api and an HTML template
     """
-    animals_data = get_animal_from_api_ninjas("fox")
+    
+    animal_name = get_user_animal_input()
+    animals_data = get_animal_from_api_ninjas(animal_name)
     
     if not animals_data:
-        print("No animals data to process!!")
+        print("No animal's data to process!!")
         return
 
     skin_types = get_skin_types(animals_data)
     selected_skin_type = handle_user_input(skin_types)
     html_template = file_operations.loads_template_html("animals_template.html")
     create_html_by_skin_type(
-        animals_data, skin_types, selected_skin_type, html_template
+        animal_name,
+        animals_data, 
+        skin_types, 
+        selected_skin_type, 
+        html_template
     )
 
 
