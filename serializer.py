@@ -70,3 +70,23 @@ def serialized_animals_to_html_template(
 
     html_template = html_template.replace("__REPLACE_ANIMALS_INFO__", string_output)
     return html_template
+
+def serialize_animal_not_exist(animal_name, html_template: str) -> str:
+    
+    string_output = ""
+    string_output += f'<li class="cards__item">\n'
+    string_output += f'<h2>The animal "{animal_name}" doesn\'t exist.</h2>'
+    string_output += f'</li">\n'
+    
+    """
+    <body>
+        <h1>My Animal Repository</h1>
+        <ul class="cards">
+            __REPLACE_ANIMALS_INFO__
+        </ul>
+    </body>    
+    """
+    
+    
+    html_template = html_template.replace("__REPLACE_ANIMALS_INFO__", string_output)
+    return html_template

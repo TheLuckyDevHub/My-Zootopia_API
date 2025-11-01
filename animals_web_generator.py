@@ -103,6 +103,11 @@ def get_user_animal_input():
             break
     return user_input
 
+def create_animal_not_exist_html(animal_name, html_template):
+        html_str = serializer.serialize_animal_not_exist(animal_name,html_template)        
+        file_name = f"animals_not_exist.html"
+        file_operations.save_html(html_str, file_name)
+
 def main():
     """
     Main function to generate the animal's HTML file from
@@ -112,13 +117,14 @@ def main():
     animal_name = get_user_animal_input()
     animals_data = get_animal_from_api_ninjas(animal_name)
     
+    html_template = file_operations.loads_template_html("animals_template.html")
     if not animals_data:
         print("No animal's data to process!!")
+        create_animal_not_exist_html(animal_name, html_template)
         return
 
     skin_types = get_skin_types(animals_data)
     selected_skin_type = handle_user_input(skin_types)
-    html_template = file_operations.loads_template_html("animals_template.html")
     create_html_by_skin_type(
         animal_name,
         animals_data, 
