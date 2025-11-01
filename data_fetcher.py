@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 import requests
 
 API_KEY = 'tlObzwDKSlaOPwL9Dm0wlw==nejGIJLbqlJiyUHr'

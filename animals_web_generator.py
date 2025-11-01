@@ -1,3 +1,6 @@
+import os
+from dotenv import load_dotenv
+
 import file_operations
 import serializer
 import data_fetcher 
@@ -97,7 +100,8 @@ def main():
     Main function to generate the animal's HTML file from
     api-ninjas animals api and an HTML template
     """
-
+    load_dotenv()
+    
     animal_name = get_user_animal_input()
     animals_data = data_fetcher.fetch_data(animal_name)
 
