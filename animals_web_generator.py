@@ -1,7 +1,6 @@
-import requests
-
 import file_operations
 import serializer
+import data_fetcher 
 
 
 def get_skin_types(animals: dict[str, any]) -> list[str]:
@@ -48,10 +47,11 @@ def handle_user_input(skin_types: list[str]) -> int:
 
 def create_html_by_skin_type(
     aninmal_name,
-    animals: dict[str, any], 
-    skin_types: list[str], 
-    selected: int, 
-    html_template: str):
+    animals: dict[str, any],
+    skin_types: list[str],
+    selected: int,
+    html_template: str,
+):
     """Creates an HTML file based on the selected skin type"""
     filtered_animals = animals
     selected_skin_type = "All"
@@ -68,55 +68,39 @@ def create_html_by_skin_type(
     html_str = serializer.serialized_animals_to_html_template(
         filtered_animals, html_template
     )
-    
+
     file_name = f"animals_{selected_skin_type}.html"
     file_operations.save_html(html_str, file_name)
-    print(f'Website was successfully generated for the animal {aninmal_name} to the file {file_name}.')
-
-
-def get_animal_from_api_ninjas(to_search_animal):
-    """_summary_
-
-    Args:
-        to_search_animal (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
-    api_url = "https://api.api-ninjas.com/v1/animals?name={}".format(to_search_animal)
-    response = requests.get(
-        api_url, headers={"X-Api-Key": "tlObzwDKSlaOPwL9Dm0wlw==nejGIJLbqlJiyUHr"}
+    print(
+        f"Website was successfully generated for the animal {aninmal_name} to the file {file_name}."
     )
-    if response.status_code == requests.codes.ok:
-        return response.json()
-    else:
-        print("Error:", response.status_code, response.text)
-        
-    return None
+
 
 def get_user_animal_input():
     while True:
-        user_input = input('Please enter an animal\'s name: ')
+        user_input = input("Please enter an animal's name: ")
         if not user_input or len(user_input) < 2:
-            print(f'The {user_input} is not a right input, please try it again...')
+            print(f"The {user_input} is not a right input, please try it again...")
         else:
             break
     return user_input
 
+
 def create_animal_not_exist_html(animal_name, html_template):
-        html_str = serializer.serialize_animal_not_exist(animal_name,html_template)        
-        file_name = f"animals_not_exist.html"
-        file_operations.save_html(html_str, file_name)
+    html_str = serializer.serialize_animal_not_exist(animal_name, html_template)
+    file_name = f"animals_not_exist.html"
+    file_operations.save_html(html_str, file_name)
+
 
 def main():
     """
     Main function to generate the animal's HTML file from
     api-ninjas animals api and an HTML template
     """
-    
+
     animal_name = get_user_animal_input()
-    animals_data = get_animal_from_api_ninjas(animal_name)
-    
+    animals_data = data_fetcher.fetch_data(animal_name)
+
     html_template = file_operations.loads_template_html("animals_template.html")
     if not animals_data:
         print("No animal's data to process!!")
@@ -126,11 +110,7 @@ def main():
     skin_types = get_skin_types(animals_data)
     selected_skin_type = handle_user_input(skin_types)
     create_html_by_skin_type(
-        animal_name,
-        animals_data, 
-        skin_types, 
-        selected_skin_type, 
-        html_template
+        animal_name, animals_data, skin_types, selected_skin_type, html_template
     )
 
 
