@@ -1,9 +1,8 @@
-import os
 from dotenv import load_dotenv
 
 import file_operations
 import serializer
-import data_fetcher 
+import data.data_fetcher as data_fetcher
 
 
 def get_skin_types(animals: dict[str, any]) -> list[str]:
@@ -72,7 +71,7 @@ def create_html_by_skin_type(
         filtered_animals, html_template
     )
 
-    file_name = f"animals_{selected_skin_type}.html"
+    file_name = f"_static/animals_{selected_skin_type}.html"
     file_operations.save_html(html_str, file_name)
     print(
         f"Website was successfully generated for the animal {aninmal_name} to the file {file_name}."
@@ -94,6 +93,7 @@ def create_animal_not_exist_html(animal_name, html_template):
     file_name = f"animals_not_exist.html"
     file_operations.save_html(html_str, file_name)
 
+import os
 
 def main():
     """
@@ -105,7 +105,7 @@ def main():
     animal_name = get_user_animal_input()
     animals_data = data_fetcher.fetch_data(animal_name)
 
-    html_template = file_operations.loads_template_html("animals_template.html")
+    html_template = file_operations.loads_template_html("_static/animals_template.html")
     if not animals_data:
         print("No animal's data to process!!")
         create_animal_not_exist_html(animal_name, html_template)

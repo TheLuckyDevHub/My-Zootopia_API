@@ -1,8 +1,6 @@
 import os
-from dotenv import load_dotenv
 import requests
 
-API_KEY = 'tlObzwDKSlaOPwL9Dm0wlw==nejGIJLbqlJiyUHr'
 
 def fetch_data(to_search_animal):
     """
@@ -22,7 +20,10 @@ def fetch_data(to_search_animal):
     },
     """
     api_url = "https://api.api-ninjas.com/v1/animals?name={}".format(to_search_animal)
+
+    API_KEY = os.getenv("API_KEY")
     response = requests.get(api_url, headers={"X-Api-Key": API_KEY})
+
     if response.status_code == requests.codes.ok:
         return response.json()
     else:

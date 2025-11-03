@@ -1,10 +1,10 @@
 def serialize_animal_type(characteristics: dict[str, any], string_output: str) -> str:
     """Adds the type of an animal form dict:characteristics to the given string"""
     if characteristics:
-        charac_type = characteristics.get("type", None)
-        if charac_type:
+        characteristic_type = characteristics.get("type", None)
+        if characteristic_type:
             string_output = (
-                f"{string_output}      <li><strong>Type:</strong> {charac_type}</li>\n"
+                f"{string_output}      <li><strong>Type:</strong> {characteristic_type}</li>\n"
             )
     return string_output
 
@@ -72,7 +72,7 @@ def serialized_animals_to_html_template(
     return html_template
 
 def serialize_animal_not_exist(animal_name, html_template: str) -> str:
-    
+    """ Generate the not existing animal site"""
     string_output = ""
     string_output += f'<li class="cards__item">\n'
     string_output += f'<h2>The animal "{animal_name}" doesn\'t exist.</h2>'
